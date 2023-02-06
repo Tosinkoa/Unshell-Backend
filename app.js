@@ -18,13 +18,7 @@ app.use(
       maxAge: 1000 * 60 * 60 * 24,
       httpOnly: true,
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      secure: false,
-      // *************
-      // I intentionally comment this out to avoid cors issue while on production since I dont have a domain that point to same dns, but the bellow code is the standard practice
-      // *************
-
-      // sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      // secure: process.env.NODE_ENV === "production" ? true : false,
+      secure: process.env.NODE_ENV === "production" ? true : false,
     },
   })
 )
