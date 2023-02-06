@@ -7,7 +7,8 @@
   "type": "module",
   "scripts": {
     "start": "node server",
-    "dev": "nodemon server"
+    "dev": "nodemon server",
+    "fast": "git add . && git commit -m && git push https://github.com/Tosinkoa/Unshelled-Backend-Assessment.git"
   },
   "dependencies": {
     "connect-mongo": "^4.6.0",

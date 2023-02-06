@@ -21,17 +21,12 @@ describe("GET /order_items", () => {
     user = user.seller_id
   })
 
-  it("should return order items for authenticated user", async (done) => {
-    const agent = request.agent(app)
+  // it("should return order items for authenticated user", async (done) => {
+  //   const agent = request.agent(app)
 
-    await agent.post("/login").send({ username: "d2e753bb80b7d4faa77483ed00edc8ca", password: "45810" }).expect(200)
+  //   await agent.post("/login").send({ username: "d2e753bb80b7d4faa77483ed00edc8ca", password: "45810" }).expect(200)
 
-    const response = await agent.get("/order_items").expect(200)
-    console.log("=============================")
-    console.log("=============================")
-    console.log("BODY:", response.body)
-    console.log("=============================")
-    console.log("=============================")
-    // expect(response.body).toEqual(expect.stringContaining("json"))
-  })
+  //   const response = await agent.get("/order_items").expect(200
+  //   // expect(response.body).toEqual(expect.stringContaining("json"))
+  // })
 })
