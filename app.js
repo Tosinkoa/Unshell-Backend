@@ -22,10 +22,9 @@ app.use(
     },
   })
 )
-
 app.use(
   cors({
-    origin: ["*"],
+    origin: ["http://localhost:3000", "https://unshell-assessment.netlify.app"],
     credentials: true,
     methods: ["GET, PUT, POST, DELETE"],
     optionsSuccessStatus: 200,

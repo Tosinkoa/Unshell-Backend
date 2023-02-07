@@ -8,7 +8,7 @@
   "scripts": {
     "start": "node server",
     "dev": "nodemon server",
-    "fast": "git add . && git commit -m && git push https://github.com/Tosinkoa/Unshelled-Backend-Assessment.git"
+    "fast": "git add . && git commit -m 'Done'&& git push https://github.com/Tosinkoa/Unshelled-Backend-Assessment.git"
   },
   "dependencies": {
     "connect-mongo": "^4.6.0",
@@ -25,6 +25,6 @@
     "supertest": "^6.3.3"
   },
   "jest": {
-    "testTimeout": 30000
+    "testTimeout": 20000
   }
 }
