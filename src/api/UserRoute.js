@@ -21,7 +21,7 @@ router.put("/account", AuthenticationMiddleware, NetworkConnectionCheckMiddlewar
       { seller_id: loggedInUser },
       { $set: { seller_city: seller_city, seller_state: seller_state.toUpperCase() } }
     )
-    return res.status(200).json({ data: "City updated successfully" })
+    return res.status(200).json({ data: "User detail updated successfully" })
   } catch (e) {
     console.log(e.message)
     return res.status(500).json({ error: "Server error, try again!" })

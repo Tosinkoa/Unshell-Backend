@@ -1,11 +1,9 @@
 import express from "express"
-import mongodb from "mongodb"
 import { client } from "../LIB/DB-Connect.js"
 import AuthenticationMiddleware from "../MIDDLEWARES/AuthenticationMiddleware.js"
 import NetworkConnectionCheckMiddleware from "../MIDDLEWARES/NetworkConnectionCheckMiddleware.js"
 import { validateOrderItem } from "../VALIDATORS/OrderRouteValidator.js"
 
-const { ObjectId } = mongodb
 const Orders = client.collection("orders")
 const Products = client.collection("products")
 const router = express.Router()
@@ -44,7 +42,7 @@ router.get("/order_items", AuthenticationMiddleware, async (req, res) => {
       { $limit: limit },
     ]).toArray()
 
-    if (orderItems < 1) return res.status(400).json({ error: "Order didnot exist" })
+    if (orderItems < 1) return res.status(400).json({ error: "Invalid order ID, can't find an order" })
     const total = await Orders.countDocuments({ seller_id: user })
     res.status(200).json({ data: orderItems, total: total, limit: limit, offset: offset })
   } catch (e) {
@@ -61,17 +59,17 @@ router.put("/order_items/:id", AuthenticationMiddleware, NetworkConnectionCheckM
   const { error, value } = validateOrderItem(req.body)
 
   if (error) return res.status(400).json({ error: error.details.map((e) => e.context.label) })
-
-  if (!orderItemId) return res.status(400).json({ error: "Order ID is required" })
+  if (!orderItemId || typeof orderItemId !== "string")
+    return res.status(400).json({ error: "Invalid order ID, can't find an order" })
   try {
     const orderItem = await Orders.findOne({
-      _id: new ObjectId(orderItemId),
+      order_id: orderItemId,
       seller_id: req.session.user,
     })
 
-    if (!orderItem) return res.status(400).json({ error: "Order didnot exist" })
+    if (!orderItem) return res.status(400).json({ error: "Invalid order ID, can't find an order" })
     await Orders.findOneAndUpdate(
-      { _id: new ObjectId(orderItemId) },
+      { order_id: orderItemId },
       {
         $set: {
           shipping_limit_date: shipping_limit_date,
@@ -80,7 +78,7 @@ router.put("/order_items/:id", AuthenticationMiddleware, NetworkConnectionCheckM
         },
       }
     )
-    return res.status(200).json({ data: "Product updated successfully" })
+    return res.status(200).json({ data: "Order updated successfully" })
   } catch (e) {
     console.log(e.message)
     return res.status(500).json({ error: "Server error, try again!" })
@@ -91,18 +89,29 @@ router.put("/order_items/:id", AuthenticationMiddleware, NetworkConnectionCheckM
 //=======================================================================
 router.get("/order_items/:id", AuthenticationMiddleware, async (req, res) => {
   const { id: orderItemId } = req.params
-  if (!orderItemId) return res.status(400).json({ error: "Order ID is required" })
+
+  if (!orderItemId || typeof orderItemId !== "string")
+    return res.status(400).json({ error: "Invalid order ID, can't find an order" })
   try {
     const orderItem = await Orders.findOne({
-      _id: new ObjectId(orderItemId),
+      order_id: orderItemId,
       seller_id: req.session.user,
     })
-    if (!orderItem) return res.status(400).json({ error: "Order didnot exist" })
+    if (!orderItem) return res.status(400).json({ error: "Invalid order ID, can't find an order" })
     const productItem = await Products.findOne({ product_id: orderItem.product_id })
-    const { _id, ...productData } = productItem
-    return res.json({
-      data: Object.assign({}, orderItem, productData),
-    })
+    // Remove data that are not needed
+    const {
+      _id,
+      product_length_cm,
+      product_height_cm,
+      product_width_cm,
+      product_description_lenght,
+      product_name_lenght,
+      product_photos_qty,
+      ...productData
+    } = productItem
+    // Return prduct id wthout its _id
+    return res.json({ data: Object.assign({}, orderItem, productData) })
   } catch (e) {
     console.log(e.message)
     return res.status(500).json({ error: "Server error, try again!" })
@@ -113,14 +122,16 @@ router.get("/order_items/:id", AuthenticationMiddleware, async (req, res) => {
 //=================================================================================================
 router.delete("/order_items/:id", AuthenticationMiddleware, NetworkConnectionCheckMiddleware, async (req, res) => {
   const { id: orderItemId } = req.params
-  if (!orderItemId) return res.status(400).json({ error: "Order ID is required" })
+  if (!orderItemId || typeof orderItemId !== "string")
+    return res.status(400).json({ error: "Invalid order ID, can't find an order" })
+
   try {
     const orderItem = await Orders.findOne({
-      _id: new ObjectId(orderItemId),
+      order_id: orderItemId,
       seller_id: req.session.user,
     })
-    if (orderItem) await Orders.deleteOne({ _id: new ObjectId(orderItemId) })
-    else return res.status(400).json({ error: "Order didnot exist" })
+    if (orderItem) await Orders.deleteOne({ order_id: orderItemId })
+    else return res.status(400).json({ error: "Invalid order ID, can't find an order" })
     return res.json({ data: "Order item deleted successfully" })
   } catch (e) {
     console.log(e.message)
