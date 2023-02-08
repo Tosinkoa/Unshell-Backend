@@ -4,7 +4,6 @@ import AuthenticationMiddleware from "../MIDDLEWARES/AuthenticationMiddleware.js
 import NetworkConnectionCheckMiddleware from "../MIDDLEWARES/NetworkConnectionCheckMiddleware.js"
 import { validateUser } from "../VALIDATORS/UserRouteValidator.js"
 const Sellers = client.collection("sellers")
-
 const router = express.Router()
 
 //================= This route update logged in seller details ================
