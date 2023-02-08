@@ -1,12 +1,10 @@
 import express from "express"
 import { client } from "../LIB/DB-Connect.js"
 import NetworkConnectionCheckMiddleware from "../MIDDLEWARES/NetworkConnectionCheckMiddleware.js"
-const Orders = client.collection("orders")
-
 const router = express.Router()
 const Products = client.collection("products")
 
-//================= This route update all product ===================
+//================= This route get all product ===================
 //===================================================================
 router.get("/all_products", NetworkConnectionCheckMiddleware, async (req, res) => {
   const limit = parseInt(req.query.limit) || 20

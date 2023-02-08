@@ -3,7 +3,6 @@ import { client } from "../LIB/DB-Connect.js"
 import AuthenticationMiddleware from "../MIDDLEWARES/AuthenticationMiddleware.js"
 import NetworkConnectionCheckMiddleware from "../MIDDLEWARES/NetworkConnectionCheckMiddleware.js"
 import { validateOrderItem } from "../VALIDATORS/OrderRouteValidator.js"
-
 const Orders = client.collection("orders")
 const Products = client.collection("products")
 const router = express.Router()
