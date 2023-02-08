@@ -21,7 +21,7 @@ router.post("/login", NetworkConnectionCheckMiddleware, async (req, res) => {
 })
 
 //================== This route check if user is authenticated ==================
-//======================================================================
+//====================================================================
 router.get("/auth", (req, res) => {
   try {
     if (!req.session.user) return res.status(400).send(false)
@@ -36,7 +36,7 @@ router.get("/auth", (req, res) => {
 router.get("/logout", async (req, res) => {
   try {
     delete req.session.user
-    return res.status(200).json({ data: "Successfully Logged Out" })
+    return res.status(200).json({ data: "Successfully Logged Out!" })
   } catch (e) {
     console.log(e.message)
     return res.status(500).json({ error: "Server error, try again!" })
